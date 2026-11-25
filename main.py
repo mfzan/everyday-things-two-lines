@@ -53,6 +53,11 @@ def main() -> int:
     # The grader collects the output as another user, so the file itself
     # must be world-readable. Only the file is chmodded, never /output.
     os.chmod(OUTPUT_PATH, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+    # Read the file back and confirm what landed on disk is exactly the
+    # entry we meant to write, instead of trusting the write blindly.
+    with open(OUTPUT_PATH, "r", encoding="utf-8") as handle:
+        if handle.read() != text:
+            raise RuntimeError("entry.txt on disk does not match the entry")
     return 0
 
 
